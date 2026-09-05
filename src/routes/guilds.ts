@@ -15,6 +15,26 @@ interface GuildInfo {
   permissions: number
 }
 
+const INVITE_PERMISSIONS = (
+  (1n << 1n) | // KickMembers
+  (1n << 2n) | // BanMembers
+  (1n << 4n) | // ManageChannels
+  (1n << 5n) | // ManageGuild
+  (1n << 6n) | // AddReactions
+  (1n << 7n) | // ViewAuditLog
+  (1n << 10n) | // ViewChannel
+  (1n << 11n) | // SendMessages
+  (1n << 13n) | // ManageMessages
+  (1n << 14n) | // EmbedLinks
+  (1n << 15n) | // AttachFiles
+  (1n << 16n) | // ReadMessageHistory
+  (1n << 20n) | // Connect
+  (1n << 21n) | // Speak
+  (1n << 28n) | // ManageRoles
+  (1n << 29n) | // ManageWebhooks
+  (1n << 40n) // ModerateMembers
+).toString()
+
 async function fetchUserGuilds(accessToken: string): Promise<GuildInfo[]> {
   const res = await fetch('https://discord.com/api/users/@me/guilds', {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -40,7 +60,11 @@ guilds.get('/', async (c) => {
   ])
   const filtered = userGuilds
     .filter((g) => (BigInt(g.permissions) & 0x20n) === 0x20n || g.owner)
-    .map((g) => ({ ...g, hasBot: botGuilds.has(g.id) }))
+    .map((g) => ({
+      ...g,
+      hasBot: botGuilds.has(g.id),
+      inviteUrl: `https://discord.com/api/oauth2/authorize?client_id=${config.discord.clientId}&permissions=${INVITE_PERMISSIONS}&scope=bot&guild_id=${g.id}`,
+    }))
     .sort((a, b) => (b.hasBot ? 1 : 0) - (a.hasBot ? 1 : 0))
   return c.json({ guilds: filtered })
 })

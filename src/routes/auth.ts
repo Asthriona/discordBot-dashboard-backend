@@ -11,7 +11,7 @@ auth.get('/discord', (c) => {
     client_id: config.discord.clientId,
     redirect_uri: config.discord.redirectUri,
     response_type: 'code',
-    scope: 'identify%20guilds',
+    scope: 'identify guilds',
   })
   return c.redirect(`https://discord.com/api/oauth2/authorize?${params}`)
 })

@@ -12,7 +12,7 @@
     "@hono/node-server": "^1.0.0",
     "cookie": "^1.0.0",
     "dotenv": "^17.4.2",
-    "hono": "^4.0.0",
+    "hono": "^4.13.18",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^9.9.1"
   },
